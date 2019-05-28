@@ -4,6 +4,9 @@ admin.initializeApp();
 const { OAuth2Client } = require("google-auth-library");
 const { google } = require("googleapis");
 
+const express = require("express");
+const cors = require("cors");
+
 const { valuesToObjects } = require("./helpers/sheets-helpers");
 
 // * Cloud: comment in before deploy
@@ -32,6 +35,43 @@ const functionsOauthClient = new OAuth2Client(
 );
 
 let oauthTokens = null;
+
+const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:8080",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: true,
+    optionsSuccessStatus: 204
+  })
+);
+
+app.options("*", cors());
+
+exports.app = functions.https.onRequest(app);
+
+app.get("/sheet-data", (req, res) => {
+  const sheets = google.sheets("v4");
+
+  const request = { spreadsheetId: CONFIG_SHEET_ID, range: ["A:Z"] };
+
+  return getAuthorizedClient()
+    .catch(error => {
+      console.log(`The API returned an error: ${error}`);
+      throw new Error(error);
+    })
+    .then(client => {
+      request.auth = client;
+      return sheets.spreadsheets.values.get(request);
+    })
+    .then(({ data }) => valuesToObjects(data.values))
+    .then(objects => res.status(200).send(objects))
+    .catch(error => {
+      console.log(error);
+      res.status(500).send([]);
+    });
+});
 
 exports.authgoogleapi = functions.https.onRequest((req, res) => {
   res.set("Cache-Control", "private, max-age=0, s-maxage=0");
@@ -65,28 +105,6 @@ exports.oauthcallback = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     return res.status(400).send(error);
   }
-});
-
-exports.getSheetData = functions.https.onRequest((req, res) => {
-  const sheets = google.sheets("v4");
-
-  const request = { spreadsheetId: CONFIG_SHEET_ID, range: ["A:Z"] };
-
-  return getAuthorizedClient()
-    .catch(error => {
-      console.log(`The API returned an error: ${error}`);
-      throw new Error(error);
-    })
-    .then(client => {
-      request.auth = client;
-      return sheets.spreadsheets.values.get(request);
-    })
-    .then(({ data }) => valuesToObjects(data.values))
-    .then(objects => res.status(200).send(objects))
-    .catch(error => {
-      console.log(error);
-      res.status(500).send([]);
-    });
 });
 
 // HELPER
