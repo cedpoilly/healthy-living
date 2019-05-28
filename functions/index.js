@@ -40,7 +40,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:8080",
+    origin: ["http://localhost:8080", "https://cedpoilly.github.io"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: true,
     optionsSuccessStatus: 204
