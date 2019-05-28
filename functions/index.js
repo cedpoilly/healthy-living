@@ -6,15 +6,17 @@ const { google } = require("googleapis");
 
 const { valuesToObjects } = require("./helpers/sheets-helpers");
 
-// const CONFIG_CLIENT_ID = functions.config().googleapi.client_id;
-// const CONFIG_CLIENT_SECRET = functions.config().googleapi.client_secret;
-// const CONFIG_SHEET_ID = functions.config().googleapi.sheet_id;
+// * Cloud: comment in before deploy
+const CONFIG_CLIENT_ID = functions.config().googleapi.client_id;
+const CONFIG_CLIENT_SECRET = functions.config().googleapi.client_secret;
+const CONFIG_SHEET_ID = functions.config().googleapi.sheet_id;
 
-const CONFIG_CLIENT_ID =
-  "1059825985046-670uhcvq5ekf6l0t4jtb4eipnng9trcu.apps.googleusercontent.com";
-const CONFIG_CLIENT_SECRET = "ZG_VxbAjI-tOmZy86FSNQAvP";
-// this sheet is shared already with cedpoilly
-const CONFIG_SHEET_ID = "1uu2Bx1CUJHRxS6h4T7Jqy_4ZyYCE8f-IEwtw-iG84vs"; // "1O26vlZgdiuTeTW01H2tgpjDCF8bJJXEmbN1YUWXhO98";
+// * Local: comment out before deploy
+// const CONFIG_CLIENT_ID =
+//   "1059825985046-670uhcvq5ekf6l0t4jtb4eipnng9trcu.apps.googleusercontent.com";
+// const CONFIG_CLIENT_SECRET = "ZG_VxbAjI-tOmZy86FSNQAvP";
+// // this sheet is shared already with cedpoilly
+// const CONFIG_SHEET_ID = "1uu2Bx1CUJHRxS6h4T7Jqy_4ZyYCE8f-IEwtw-iG84vs"; // "1O26vlZgdiuTeTW01H2tgpjDCF8bJJXEmbN1YUWXhO98";
 
 const FUNCTIONS_REDIRECT = `https://us-central1-${
   process.env.GCLOUD_PROJECT
@@ -77,14 +79,13 @@ exports.getSheetData = functions.https.onRequest((req, res) => {
     })
     .then(client => {
       request.auth = client;
-      return request;
+      return sheets.spreadsheets.values.get(request);
     })
-    .then(request => sheets.spreadsheets.values.get(request))
     .then(({ data }) => valuesToObjects(data.values))
     .then(objects => res.status(200).send(objects))
     .catch(error => {
-      console.log(`Failed to get Authrorized Client: ${error}`);
-      throw new Error(error);
+      console.log(error);
+      res.status(500).send([]);
     });
 });
 
@@ -94,17 +95,14 @@ async function getAuthorizedClient() {
     return functionsOauthClient;
   }
 
-  console.log("----------- FETCHING CLIENT AUTH DATA -----------");
-
   const snapshot = await admin
     .database()
     .ref(DB_TOKEN_PATH)
     .once("value");
 
-  console.log("----------- DONE FETCHING CLIENT AUTH DATA -----------");
-
   oauthTokens = snapshot.val();
-  console.log("----------- ", oauthTokens, " -----------");
+
   functionsOauthClient.setCredentials(oauthTokens);
+
   return functionsOauthClient;
 }
