@@ -1,0 +1,43 @@
+[debug] [2019-05-28T19:28:03.445Z] ----------------------------------------------------------------------
+[debug] [2019-05-28T19:28:03.449Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\cedri\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-05-28T19:28:03.449Z] CLI Version:   6.10.0
+[debug] [2019-05-28T19:28:03.449Z] Platform:      win32
+[debug] [2019-05-28T19:28:03.449Z] Node Version:  v8.9.3
+[debug] [2019-05-28T19:28:03.450Z] Time:          Tue May 28 2019 23:28:03 GMT+0400 (Mauritius Standard Time)
+[debug] [2019-05-28T19:28:03.450Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-05-28T19:28:03.460Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-05-28T19:28:03.462Z] > authorizing via signed-in user
+[debug] [2019-05-28T19:28:03.462Z] [iam] checking project healthyliving-mroswell for permissions ["firebase.projects.get"]
+[debug] [2019-05-28T19:28:03.464Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-05-28T19:28:03.464Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-05-28T19:28:04.845Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-28T19:28:04.850Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/healthyliving-mroswell:testIamPermissions  
+
+[debug] [2019-05-28T19:28:07.751Z] <<< HTTP RESPONSE 200
+[debug] [2019-05-28T19:28:07.752Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/healthyliving-mroswell  
+ 
+[debug] [2019-05-28T19:28:10.095Z] <<< HTTP RESPONSE 200
+[info] +  functions: Using node@8 from host.
+[debug] [2019-05-28T19:28:10.109Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/792418139954:getServerAppConfig  
+ 
+[debug] [2019-05-28T19:28:11.848Z] <<< HTTP RESPONSE 200
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "R:\clients\mroswell\healthy-living\functions" for Cloud Functions...
+[debug] [2019-05-28T19:28:12.405Z] Functions runtime initialized.
+[debug] [2019-05-28T19:28:12.405Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
+[debug] [2019-05-28T19:28:14.086Z] firebase-admin has been stubbed.
+[info] i  Your code has been provided a "firebase-admin" instance.
+[warn] !  TypeError: Cannot read property 'client_id' of undefined
+    at Object.<anonymous> (R:\clients\mroswell\healthy-living\functions\index.js:13:54)
+    at Module._compile (module.js:635:30)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Module.require (module.js:579:17)
+    at require (internal/module.js:11:18)
+    at C:\Users\cedri\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:459:29
+    at Generator.next (<anonymous>)
+[warn] !  Your function was killed because it raised an unhandled error.

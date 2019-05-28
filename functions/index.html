@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Healthy Living - Testing the Cloud Functions</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        padding: 1rem;
+        font-family: sans-serif;
+      }
+
+      #table {
+        margin: 1rem;
+        display: grid;
+        grid-template-columns: repeat(14, 1fr);
+      }
+
+      .cell,
+      .header {
+        padding: 0.25rem 1rem;
+        border: 1px solid chocolate;
+        vertical-align: center;
+      }
+
+      .header {
+        font-weight: bold;
+      }
+
+      .subject {
+        width: 17rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="table"></div>
+
+    <script>
+      const $ = document.querySelector.bind(document);
+      const url =
+        "https://us-central1-healthyliving-mroswell.cloudfunctions.net/app/sheet-data";
+
+      (async () => {
+        const response = await fetch(url);
+        const records = await response.json();
+
+        console.table(records);
+
+        updateTable({ tableSelector: "#table", records });
+      })();
+
+      function updateTable({ tableSelector, records }) {
+        const table = $(tableSelector);
+
+        const headers = Object.keys(records[0]);
+        const headerElements = makeHeaders(headers);
+
+        table.innerHTML = headerElements.join("");
+
+        const rows = records.map(makeRow).join("");
+
+        table.innerHTML = `${table.innerHTML}${rows}`;
+      }
+
+      function makeHeaders(headers) {
+        const headerMaker = function(text, index) {
+          return `<span class="header ${
+            index === 4 ? "subject" : "other"
+          }">${text}</span>`;
+        };
+
+        const headerElements = headers.reduce((list, header, index) => {
+          const headerElement = headerMaker(header, index);
+
+          list = [...list, headerElement];
+          return list;
+        }, []);
+
+        return headerElements;
+      }
+
+      function makeRow(record) {
+        const values = Object.values(record);
+        // debugger;
+
+        const cellMaker = function(text, index) {
+          return `<span class="cell">${text}</span>`;
+        };
+
+        const cellElements = values.reduce((list, cell, index) => {
+          const cellElement = cellMaker(cell);
+
+          list = [...list, cellElement];
+          return list;
+        }, []);
+
+        const flat = cellElements.reduce((flatArray, currentArray) => {
+          flatArray = [...flatArray, currentArray];
+          return flatArray;
+        }, []);
+
+        return flat.join("");
+      }
+    </script>
+  </body>
+</html>
