@@ -4,6 +4,8 @@ admin.initializeApp();
 const { OAuth2Client } = require("google-auth-library");
 const { google } = require("googleapis");
 
+const { valuesToObjects } = require("./helpers/sheets-helpers");
+
 // const CONFIG_CLIENT_ID = functions.config().googleapi.client_id;
 // const CONFIG_CLIENT_SECRET = functions.config().googleapi.client_secret;
 // const CONFIG_SHEET_ID = functions.config().googleapi.sheet_id;
@@ -69,22 +71,17 @@ exports.getSheetData = functions.https.onRequest((req, res) => {
   const request = { spreadsheetId: CONFIG_SHEET_ID, range: ["A:Z"] };
 
   return getAuthorizedClient()
+    .catch(error => {
+      console.log(`The API returned an error: ${error}`);
+      throw new Error(error);
+    })
     .then(client => {
       request.auth = client;
-      console.log("----------- FETCHING SHEET DATA -----------");
-
-      return sheets.spreadsheets.values
-        .get(request)
-        .then(response => {
-          console.log("----------- ", response.data, " -----------");
-          // return response.data;
-          return res.status(200).send(response.data);
-        })
-        .catch(error => {
-          console.log(`The API returned an error: ${error}`);
-          throw new Error(error);
-        });
+      return request;
     })
+    .then(request => sheets.spreadsheets.values.get(request))
+    .then(({ data }) => valuesToObjects(data.values))
+    .then(objects => res.status(200).send(objects))
     .catch(error => {
       console.log(`Failed to get Authrorized Client: ${error}`);
       throw new Error(error);
