@@ -11,6 +11,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@fullcalendar/core": "^4.1.0",
+    "@fullcalendar/daygrid": "^4.1.0",
+    "@fullcalendar/interaction": "^4.1.0",
+    "@fullcalendar/timegrid": "^4.1.0",
+    "@fullcalendar/vue": "^4.1.1",
     "core-js": "^2.6.5",
     "material-design-icons-iconfont": "^3.0.3",
     "roboto-fontface": "*",
