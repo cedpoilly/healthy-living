@@ -66,6 +66,7 @@ export default {
         this.setCalendarDateFromEvents(this.calendarApi, currentMonthDate);
 
         this.setCurrentLabels(currentMonthDate);
+
         this.calendarApi.setOption("eventOrder", "-isMain, start");
       });
   },
@@ -133,6 +134,10 @@ export default {
         "title",
         this.alreadyDisplayedItems
       );
+
+      if (!isMain) {
+        info.el.classList.add("is-sub");
+      }
 
       if (!isMain && !alreadyDisplayed) {
         info.el.classList.add("appear");
@@ -235,6 +240,10 @@ export default {
   border-radius: 0;
   padding-top: 0.125rem;
   background-color: rgb(159, 168, 218);
+
+  &.is-sub {
+    background-color: rgb(196, 159, 218);
+  }
 }
 
 .fc-day-grid-event.fc-h-event.fc-event.fc-start.fc-not-end,
@@ -243,6 +252,10 @@ export default {
   border: none;
   border-radius: 0;
   background-color: rgb(165, 215, 167);
+
+  &.is-sub {
+    background-color: rgb(196, 159, 218);
+  }
 }
 
 .fc-day-grid-event.fc-h-event.fc-event.fc-start.fc-not-end {
