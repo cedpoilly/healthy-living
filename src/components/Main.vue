@@ -16,6 +16,14 @@
       @eventRender="eventRender"
       @eventClick="onEventSelected"
     />
+
+    <Dialog
+      :show="showDialog"
+      v-bind="dialogData"
+      @closed="onCloseDialog"
+      @md-closed="onCloseDialog"
+      @md-clicked-outside="onCloseDialog"
+    />
   </div>
 </template>
 
@@ -24,15 +32,24 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+import Dialog from "./Dialog.vue";
+
 export default {
   name: "Main",
 
   components: {
-    FullCalendar
+    FullCalendar,
+    Dialog
   },
 
   data() {
     return {
+      showDialog: false,
+      dialogData: {
+        title: "",
+        content: ""
+      },
+
       currentMonthLabel: "",
       currentYearLabel: "",
 
@@ -104,8 +121,14 @@ export default {
     },
 
     handleItemWithDescription(item) {
-      const description = item._def.extendedProps.description;
-      alert(description);
+      // alert(description);
+      const data = { ...item._def.extendedProps, ...item._def };
+
+      const { title, description: content } = data;
+
+      this.dialogData = { title, content };
+
+      this.showDialog = true;
     },
 
     handleLinkedItems(linkedItems) {
@@ -165,6 +188,10 @@ export default {
       });
 
       return !!item;
+    },
+
+    onCloseDialog() {
+      this.showDialog = false;
     }
   }
 };
