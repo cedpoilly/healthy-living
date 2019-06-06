@@ -66,6 +66,7 @@ export default {
         this.setCalendarDateFromEvents(this.calendarApi, currentMonthDate);
 
         this.setCurrentLabels(currentMonthDate);
+        this.calendarApi.setOption("eventOrder", "-isMain, start");
       });
   },
 
