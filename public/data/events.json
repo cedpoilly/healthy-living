@@ -26,17 +26,20 @@
       {
         "start": "2019-09-08T07:00:00",
         "end": "2019-09-08T07:00:00",
-        "title": "Start veggies in electric steamer"
+        "title": "Start veggies in electric steamer",
+        "description": "broccoli, green beans, cauliflower"
       },
       {
         "start": "2019-09-08T07:15:00",
         "end": "2019-09-08T07:20:00",
-        "title": "Eat half the veggies"
+        "title": "Eat half the veggies",
+        "description": "linked item with data"
       },
       {
         "start": "2019-09-08T07:21:00",
         "end": "2019-09-08T07:23:00",
-        "title": "Pack lunch (rice, veggies, fruit), and go"
+        "title": "Pack lunch (rice, veggies, fruit), and go",
+        "description": "linked item with data"
       }
     ]
   },

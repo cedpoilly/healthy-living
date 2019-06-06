@@ -88,12 +88,27 @@ export default {
 
     // eslint-disable-next-line
     onEventSelected({ el, event, jsEvent, view }) {
-      let linkedItems = event._def.extendedProps.linkedItems;
+      const description = event._def.extendedProps.description;
+
+      if (description) {
+        this.handleItemWithDescription(event);
+      }
+
+      const linkedItems = event._def.extendedProps.linkedItems;
 
       if (!linkedItems) {
         return;
       }
 
+      this.handleLinkedItems(linkedItems);
+    },
+
+    handleItemWithDescription(item) {
+      const description = item._def.extendedProps.description;
+      alert(description);
+    },
+
+    handleLinkedItems(linkedItems) {
       linkedItems.forEach(this.handleLinkedItem);
     },
 
