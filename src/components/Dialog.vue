@@ -52,6 +52,15 @@ export default {
       handler(value) {
         this.showMe = value;
       }
+    },
+
+    showMe: {
+      immediate: true,
+      handler(value) {
+        if (!value) {
+          this.$emit("closed");
+        }
+      }
     }
   }
 };

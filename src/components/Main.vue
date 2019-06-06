@@ -22,7 +22,6 @@
       v-bind="dialogData"
       @closed="onCloseDialog"
       @md-closed="onCloseDialog"
-      @md-clicked-outside="onCloseDialog"
     />
   </div>
 </template>
@@ -198,6 +197,15 @@ export default {
 </script>
 
 <style lang="scss">
+// overrides of md theme
+.md-theme-default a:not(.md-button) {
+  color: white;
+}
+.md-theme-default a:not(.md-button) {
+  text-decoration: none !important;
+  color: white !important;
+}
+
 @keyframes expand {
   0% {
     height: 0.5rem !important;
