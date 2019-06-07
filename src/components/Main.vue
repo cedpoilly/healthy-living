@@ -34,7 +34,13 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Dialog from "./Dialog.vue";
 
 import { setTimingString } from "@/helpers/animation.js";
+import {
+  getItemAndIndex,
+  removeItemFromList,
+  isPresentInList
+} from "@/helpers/filtering.js";
 
+import { executeAfterDelay } from "@/helpers/delay-execution.js";
 export default {
   name: "Main",
 
@@ -51,6 +57,8 @@ export default {
         content: ""
       },
 
+      animationConfig: { duration: 0, delay: 0 },
+
       currentMonthLabel: "",
       currentYearLabel: "",
 
@@ -64,6 +72,7 @@ export default {
       calendarWeekends: true,
 
       alreadyDisplayedItems: [],
+      itemsToRemove: [],
 
       events: []
     };
@@ -102,6 +111,8 @@ export default {
     },
 
     applyAnimationTiming({ duration, delay, timingFunction }) {
+      this.animationConfig = { duration, delay };
+
       const root = document.documentElement;
 
       root.style.setProperty("--anim-duration", setTimingString(duration));
@@ -137,11 +148,20 @@ export default {
         return;
       }
 
-      this.handleLinkedItems(linkedItems);
+      const expanded = event._def.extendedProps.isExpanded;
+
+      if (expanded) {
+        const config = { event, list: this.events, expanded: false };
+        this.hideLinkedItems(linkedItems);
+        this.toggleExpandedOnMain(config);
+      } else {
+        const config = { event, list: [...this.events], expanded: true };
+        this.handleLinkedItems(linkedItems);
+        this.toggleExpandedOnMain(config);
+      }
     },
 
     handleItemWithDescription(item) {
-      // alert(description);
       const data = { ...item._def.extendedProps, ...item._def };
 
       const { title, description: content } = data;
@@ -151,21 +171,34 @@ export default {
       this.showDialog = true;
     },
 
+    toggleExpandedOnMain({ event: eventToUpdate, list, expanded }) {
+      const orig = list.find(event => event.title === eventToUpdate.title);
+      const index = list.indexOf(orig);
+
+      const updatedList = [...list];
+      updatedList[index] = { ...orig, isExpanded: expanded };
+
+      this.events = updatedList;
+    },
+
     handleLinkedItems(linkedItems) {
       linkedItems.forEach(this.handleLinkedItem);
     },
 
     handleLinkedItem(item, itemIndex) {
-      setTimeout(() => {
-        this.displayLinkedItemIfNotYetDone(item);
+      const delay =
+        (this.animationConfig.duration + this.animationConfig.delay) *
+        itemIndex;
 
-        const delay = 1000;
-        this.markItemAsDisplayedAfterDelay(item, itemIndex, delay);
-      }, 1000 * itemIndex);
+      executeAfterDelay(delay, () => {
+        this.displayLinkedItemIfNotYetDone(item);
+      }).then(() => {
+        this.alreadyDisplayedItems = [...this.alreadyDisplayedItems, item];
+      });
     },
 
     displayLinkedItemIfNotYetDone(item) {
-      const alreadyDisplayed = this.checkAlreadyDisplayed(
+      const alreadyDisplayed = isPresentInList(
         item,
         "title",
         this.alreadyDisplayedItems
@@ -178,16 +211,18 @@ export default {
       this.events.push(item);
     },
 
-    markItemAsDisplayedAfterDelay(item, itemIndex, delay) {
-      setTimeout(() => {
-        this.alreadyDisplayedItems = [...this.alreadyDisplayedItems, item];
-      }, delay * itemIndex);
+    hideLinkedItems(linkedItems) {
+      linkedItems.forEach(this.hideLinkedItem);
+    },
+
+    hideLinkedItem(item) {
+      this.itemsToRemove = [...this.itemsToRemove, item];
     },
 
     eventRender(info) {
       const isMain = info.event._def.extendedProps.isMain;
 
-      const alreadyDisplayed = this.checkAlreadyDisplayed(
+      const alreadyDisplayed = isPresentInList(
         info.event._def,
         "title",
         this.alreadyDisplayedItems
@@ -200,14 +235,78 @@ export default {
       if (!isMain && !alreadyDisplayed) {
         info.el.classList.add("appear");
       }
-    },
 
-    checkAlreadyDisplayed(itemToCheck, fieldName, list) {
-      const item = list.find(item => {
-        return itemToCheck[fieldName] === item[fieldName];
-      });
+      if (!isMain) {
+        const toRemove = isPresentInList(
+          info.event._def,
+          "title",
+          this.itemsToRemove
+        );
 
-      return !!item;
+        if (toRemove) {
+          const { item } = getItemAndIndex(
+            this.events,
+            info.event._def.title,
+            "title"
+          );
+
+          const linkedItemIndex = (() => {
+            // find parent item
+            const index = this.events.reduce((foundIndex, event) => {
+              if (!event.linkedItems) {
+                return foundIndex;
+              }
+
+              const indexInLinkedItem = event.linkedItems.indexOf(item);
+              if (indexInLinkedItem > -1) {
+                foundIndex = indexInLinkedItem;
+              }
+
+              return foundIndex;
+            }, -1);
+
+            return index;
+          })();
+
+          const addAnimDelay = this.animationConfig.duration * linkedItemIndex;
+          const delay = this.animationConfig.duration * (linkedItemIndex + 1);
+
+          console.log(`linkedItemIndex: ${linkedItemIndex}`);
+          console.log(`delay: ${delay}`);
+
+          Promise.resolve()
+            .then(() => {
+              return executeAfterDelay(addAnimDelay, () => {
+                console.log(
+                  new Date().getSeconds(),
+                  `Add class delay: ${delay}`,
+                  info.event._def.title
+                );
+
+                info.el.classList.add("remove");
+
+                return "done";
+              });
+            })
+            .then(() => {
+              return executeAfterDelay(delay, () => {
+                requestAnimationFrame(() => {
+                  this.itemsToRemove = removeItemFromList(
+                    this.itemsToRemove,
+                    item
+                  );
+
+                  this.events = removeItemFromList(this.events, item);
+
+                  this.alreadyDisplayedItems = removeItemFromList(
+                    this.alreadyDisplayedItems,
+                    item
+                  );
+                });
+              });
+            });
+        }
+      }
     },
 
     onCloseDialog() {
@@ -248,6 +347,27 @@ export default {
   opacity: 0;
   top: -1rem;
   animation-name: expand;
+  animation-duration: var(--anim-duration);
+  animation-delay: var(--animation-delay);
+  animation-timing-function: var(--animation-timing-function);
+  animation-fill-mode: forwards;
+}
+@keyframes collapse {
+  100% {
+    height: 0.5rem !important;
+  }
+
+  0% {
+    height: 1rem !important;
+    opacity: 1;
+    display: block;
+    top: 0;
+  }
+}
+.fc-day-grid-event.fc-h-event.fc-event.remove {
+  opacity: 0;
+  top: -1rem;
+  animation-name: collapse;
   animation-duration: var(--anim-duration);
   animation-delay: var(--animation-delay);
   animation-timing-function: var(--animation-timing-function);
