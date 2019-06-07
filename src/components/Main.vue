@@ -107,7 +107,6 @@ export default {
       root.style.setProperty("--anim-duration", setTimingString(duration));
       root.style.setProperty("--anim-delay", setTimingString(delay));
       root.style.setProperty("--anim-timing-function", timingFunction);
-      debugger;
     },
 
     setCalendarDateFromEvents(api, currentMonthDate) {
