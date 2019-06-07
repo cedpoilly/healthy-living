@@ -75,10 +75,9 @@ export default {
 
   mounted() {
     const url = `${process.env.VUE_APP_BASE_URL}/data/events.json`;
-    console.log(url);
+
     fetch(url)
-      .then(response => response.text())
-      .then(JSON.parse)
+      .then(response => response.json())
       .then(events => (this.events = events))
       .then(() => {
         this.calendarApi = this.$refs.fullCalendar.getApi();
