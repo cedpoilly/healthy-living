@@ -33,6 +33,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import Dialog from "./Dialog.vue";
 
+import { setTimingString } from "@/helpers/animation.js";
+
 export default {
   name: "Main",
 
@@ -67,6 +69,10 @@ export default {
     };
   },
 
+  created() {
+    this.fetchAnimationConfig().then(this.applyAnimationTiming);
+  },
+
   mounted() {
     const url = `${process.env.VUE_APP_BASE_URL}/data/events.json`;
     console.log(url);
@@ -88,6 +94,21 @@ export default {
   },
 
   methods: {
+    async fetchAnimationConfig() {
+      const url = `${process.env.VUE_APP_BASE_URL}/config/animation.json`;
+      const getJson = response => response.json();
+
+      return await fetch(url).then(getJson);
+    },
+
+    applyAnimationTiming({ duration, delay }) {
+      const root = document.documentElement;
+
+      root.style.setProperty("--anim-duration", setTimingString(duration));
+      root.style.setProperty("--anim-delay", setTimingString(delay));
+      debugger;
+    },
+
     setCalendarDateFromEvents(api, currentMonthDate) {
       api.gotoDate(currentMonthDate);
     },
@@ -197,6 +218,10 @@ export default {
 </script>
 
 <style lang="scss">
+:root {
+  --anim-duration: 0.5s;
+  --animation-delay: 0.2s;
+}
 // overrides of md theme
 .md-theme-default a:not(.md-button) {
   color: white;
@@ -222,8 +247,8 @@ export default {
   opacity: 0;
   top: -1rem;
   animation-name: expand;
-  animation-duration: 0.5s;
-  animation-delay: 0.2s;
+  animation-duration: var(--anim-duration);
+  animation-delay: var(--animation-delay);
   animation-fill-mode: forwards;
 }
 
