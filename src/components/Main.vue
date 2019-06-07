@@ -101,11 +101,12 @@ export default {
       return await fetch(url).then(getJson);
     },
 
-    applyAnimationTiming({ duration, delay }) {
+    applyAnimationTiming({ duration, delay, timingFunction }) {
       const root = document.documentElement;
 
       root.style.setProperty("--anim-duration", setTimingString(duration));
       root.style.setProperty("--anim-delay", setTimingString(delay));
+      root.style.setProperty("--anim-timing-function", timingFunction);
       debugger;
     },
 
@@ -220,7 +221,8 @@ export default {
 <style lang="scss">
 :root {
   --anim-duration: 0.5s;
-  --animation-delay: 0.2s;
+  --anim-delay: 0.2s;
+  --anim-timing-function: linear;
 }
 // overrides of md theme
 .md-theme-default a:not(.md-button) {
@@ -249,6 +251,7 @@ export default {
   animation-name: expand;
   animation-duration: var(--anim-duration);
   animation-delay: var(--animation-delay);
+  animation-timing-function: var(--animation-timing-function);
   animation-fill-mode: forwards;
 }
 
