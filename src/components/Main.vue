@@ -89,7 +89,8 @@ export default {
 
         this.setCurrentLabels(currentMonthDate);
 
-        this.calendarApi.setOption("eventOrder", "-isMain, start");
+        const sortString = "start"; // kept as ref: "-isMain, start"
+        this.calendarApi.setOption("eventOrder", sortString);
       });
   },
 
