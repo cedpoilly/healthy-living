@@ -37,7 +37,8 @@ import { setTimingString } from "@/helpers/animation.js";
 import {
   getItemAndIndex,
   removeItemFromList,
-  isPresentInList
+  isPresentInList,
+  isLastInList
 } from "@/helpers/filtering.js";
 
 import { executeAfterDelay } from "@/helpers/delay-execution.js";
@@ -71,7 +72,7 @@ export default {
 
       calendarWeekends: true,
 
-      alreadyDisplayedItems: [],
+      displayedItems: [],
       itemsToRemove: [],
 
       events: []
@@ -149,7 +150,6 @@ export default {
       }
 
       const expanded = event._def.extendedProps.isExpanded;
-
       if (expanded) {
         const config = { event, list: this.events, expanded: false };
         this.hideLinkedItems(linkedItems);
@@ -187,28 +187,25 @@ export default {
 
     handleLinkedItem(item, itemIndex) {
       const delay =
+        100 +
         (this.animationConfig.duration + this.animationConfig.delay) *
-        itemIndex;
+          itemIndex;
 
       executeAfterDelay(delay, () => {
         this.displayLinkedItemIfNotYetDone(item);
       }).then(() => {
-        this.alreadyDisplayedItems = [...this.alreadyDisplayedItems, item];
+        this.displayedItems = [...this.displayedItems, item];
       });
     },
 
     displayLinkedItemIfNotYetDone(item) {
-      const alreadyDisplayed = isPresentInList(
-        item,
-        "title",
-        this.alreadyDisplayedItems
-      );
+      const alreadyDisplayed = isPresentInList(item, "title", this.events);
 
       if (alreadyDisplayed) {
         return;
       }
 
-      this.events.push(item);
+      this.events = [...this.events, item];
     },
 
     hideLinkedItems(linkedItems) {
@@ -221,91 +218,61 @@ export default {
 
     eventRender(info) {
       const isMain = info.event._def.extendedProps.isMain;
+      if (isMain) {
+        return;
+      }
 
-      const alreadyDisplayed = isPresentInList(
-        info.event._def,
+      info.el.classList.add("is-sub");
+
+      const isLast = isLastInList(this.events, info.event.title, "title");
+
+      if (!isLast) {
+        return;
+      }
+
+      const displayed = isPresentInList(
+        info.event,
         "title",
-        this.alreadyDisplayedItems
+        this.displayedItems
       );
 
-      if (!isMain) {
-        info.el.classList.add("is-sub");
+      const toRemove = isPresentInList(info.event, "title", this.itemsToRemove);
+
+      if (!displayed) {
+        info.el.classList.toggle("appear");
       }
 
-      if (!isMain && !alreadyDisplayed) {
-        info.el.classList.add("appear");
-      }
-
-      if (!isMain) {
-        const toRemove = isPresentInList(
-          info.event._def,
-          "title",
-          this.itemsToRemove
+      if (toRemove) {
+        const { item } = getItemAndIndex(
+          this.events,
+          info.event._def.title,
+          "title"
         );
 
-        if (toRemove) {
-          const { item } = getItemAndIndex(
-            this.events,
-            info.event._def.title,
-            "title"
-          );
+        this.itemsToRemove = removeItemFromList(this.itemsToRemove, item);
 
-          const linkedItemIndex = (() => {
-            // find parent item
-            const index = this.events.reduce((foundIndex, event) => {
-              if (!event.linkedItems) {
-                return foundIndex;
-              }
+        const addAnimDelay = 100; // just to prevent the animation to start when the row jump happens
+        const delay = this.animationConfig.duration;
 
-              const indexInLinkedItem = event.linkedItems.indexOf(item);
-              if (indexInLinkedItem > -1) {
-                foundIndex = indexInLinkedItem;
-              }
+        Promise.resolve()
+          .then(() => {
+            return executeAfterDelay(addAnimDelay, () => {
+              info.el.classList.add("remove");
 
-              return foundIndex;
-            }, -1);
-
-            return index;
-          })();
-
-          const addAnimDelay = this.animationConfig.duration * linkedItemIndex;
-          const delay = this.animationConfig.duration * (linkedItemIndex + 1);
-
-          console.log(`linkedItemIndex: ${linkedItemIndex}`);
-          console.log(`delay: ${delay}`);
-
-          Promise.resolve()
-            .then(() => {
-              return executeAfterDelay(addAnimDelay, () => {
-                console.log(
-                  new Date().getSeconds(),
-                  `Add class delay: ${delay}`,
-                  info.event._def.title
+              return "done";
+            });
+          })
+          .then(() => {
+            return executeAfterDelay(delay, () => {
+              requestAnimationFrame(() => {
+                this.events = removeItemFromList(this.events, item);
+                this.displayedItems = removeItemFromList(
+                  this.displayedItems,
+                  item
                 );
-
-                info.el.classList.add("remove");
-
-                return "done";
-              });
-            })
-            .then(() => {
-              return executeAfterDelay(delay, () => {
-                requestAnimationFrame(() => {
-                  this.itemsToRemove = removeItemFromList(
-                    this.itemsToRemove,
-                    item
-                  );
-
-                  this.events = removeItemFromList(this.events, item);
-
-                  this.alreadyDisplayedItems = removeItemFromList(
-                    this.alreadyDisplayedItems,
-                    item
-                  );
-                });
               });
             });
-        }
+          });
       }
     },
 
