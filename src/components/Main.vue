@@ -238,10 +238,12 @@ export default {
 
       const toRemove = isPresentInList(info.event, "title", this.itemsToRemove);
 
+      // * only adding a class as the state was modified already
       if (!displayed) {
         info.el.classList.toggle("appear");
       }
 
+      // * much more data processing here as everything happens in reverse
       if (toRemove) {
         const { item } = getItemAndIndex(
           this.events,
@@ -251,29 +253,22 @@ export default {
 
         this.itemsToRemove = removeItemFromList(this.itemsToRemove, item);
 
-        const addAnimDelay = 100; // just to prevent the animation to start when the row jump happens
-        const delay = this.animationConfig.duration;
+        const animDelay = 100; // just to prevent the animation to start when the row jump happens
+        const stateAffectDelay = this.animationConfig.duration;
 
-        Promise.resolve()
-          .then(() => {
-            return executeAfterDelay(addAnimDelay, () => {
-              info.el.classList.add("remove");
-
-              return "done";
-            });
-          })
-          .then(() => {
-            return executeAfterDelay(delay, () => {
-              requestAnimationFrame(() => {
-                this.events = removeItemFromList(this.events, item);
-                this.displayedItems = removeItemFromList(
-                  this.displayedItems,
-                  item
-                );
-              });
-            });
-          });
+        this.handleItemRemoval({ info, item, animDelay, stateAffectDelay });
       }
+    },
+
+    async handleItemRemoval({ info, item, animDelay, stateAffectDelay }) {
+      await Promise.resolve();
+
+      await executeAfterDelay(animDelay, () => info.el.classList.add("remove"));
+
+      await executeAfterDelay(stateAffectDelay, () => {
+        this.events = removeItemFromList(this.events, item);
+        this.displayedItems = removeItemFromList(this.displayedItems, item);
+      });
     },
 
     onCloseDialog() {
