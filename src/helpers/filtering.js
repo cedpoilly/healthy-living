@@ -54,3 +54,44 @@ export const updateInList = (list, item) => {
 
   return newList;
 };
+
+/**
+ * Find the child in a list of potential parents
+ *
+ * @param {array} list list of main events
+ * @param {object} item child to find
+ * @param {string} groupName name of the field to look in parent
+ */
+export function findParentInList(list, item, groupName) {
+  return list.reduce((parent, main) => {
+    if (!main[groupName]) {
+      return parent;
+    }
+
+    const element = main[groupName].find(
+      element => item.title === element.title
+    );
+
+    const isParent = main[groupName].indexOf(element) > -1;
+
+    if (isParent) {
+      parent = main;
+    }
+
+    return parent;
+  }, {});
+}
+
+export const isLastInParentList = (list, item, groupName) => {
+  let isLast = false;
+
+  list.forEach(event => {
+    if (!event.linkedItems || !event.linkedItems.length) {
+      return;
+    }
+
+    isLast = isLastInList(event.linkedItems, item, groupName);
+  });
+
+  return isLast;
+};

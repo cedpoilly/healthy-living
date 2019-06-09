@@ -38,8 +38,9 @@ import {
   getItemAndIndex,
   removeItemFromList,
   isPresentInList,
-  isLastInList
+  findParentInList
 } from "@/helpers/filtering.js";
+import { markNextAs } from "@/helpers/transformers.js";
 
 import { executeAfterDelay } from "@/helpers/delay-execution.js";
 export default {
@@ -153,9 +154,9 @@ export default {
 
       const expanded = event._def.extendedProps.isExpanded;
       if (expanded) {
-        this.hideLinkedItems(linkedItems);
+        this.hideLinkedItems(linkedItems, event);
       } else {
-        this.handleLinkedItems(linkedItems);
+        this.handleLinkedItems(linkedItems, event);
       }
 
       const config = { event, list: this.events, expanded: !expanded };
@@ -182,19 +183,38 @@ export default {
       this.events = updatedList;
     },
 
-    handleLinkedItems(linkedItems) {
-      linkedItems.forEach(this.handleLinkedItem);
+    handleLinkedItems(linkedItems, parent) {
+      const markedItems = linkedItems.map(item => ({
+        ...item,
+        visual: "display-future"
+      }));
+
+      const cleanedParents = { title: parent.title, linkedItems: markedItems };
+
+      markedItems.forEach((item, index) =>
+        this.handleLinkedItem(item, index, cleanedParents)
+      );
     },
 
-    async handleLinkedItem(item, itemIndex) {
+    async handleLinkedItem(item, itemIndex, parent) {
       const { duration, delay } = this.animationConfig;
       const timeout = 100 + (duration + delay) * itemIndex;
 
-      await executeAfterDelay(timeout, () =>
-        this.displayLinkedItemIfNotYetDone(item)
-      );
+      const { linkedItems } = parent;
 
-      this.displayedItems = [...this.displayedItems, item];
+      await executeAfterDelay(timeout, () => {
+        const updatedItems = markNextAs(
+          linkedItems,
+          "display-future",
+          "display-current"
+        );
+
+        this.displayedItems = {
+          [parent.title]: [...updatedItems]
+        };
+
+        this.displayLinkedItemIfNotYetDone(item);
+      });
     },
 
     displayLinkedItemIfNotYetDone(item) {
@@ -207,15 +227,42 @@ export default {
       this.events = [...this.events, item];
     },
 
-    hideLinkedItems(linkedItems) {
-      linkedItems.forEach(this.hideLinkedItem);
+    hideLinkedItems(linkedItems, parent) {
+      const markedItems = linkedItems.map(item => ({
+        ...item,
+        visual: "remove-future"
+      }));
+
+      const cleanedParents = { title: parent.title, linkedItems: markedItems };
+
+      linkedItems.forEach((item, index) =>
+        this.hideLinkedItem(item, index, cleanedParents)
+      );
     },
 
-    hideLinkedItem(item) {
-      this.itemsToRemove = [...this.itemsToRemove, item];
+    async hideLinkedItem(item, itemIndex, parent) {
+      const { duration, delay } = this.animationConfig;
+      const timeout = 100 + (duration + delay) * itemIndex;
+
+      const { linkedItems } = parent;
+
+      await executeAfterDelay(timeout, () => {
+        const updatedItems = markNextAs(
+          linkedItems.reverse(),
+          "remove-future",
+          "remove-current"
+        );
+
+        this.displayedItems = {
+          [parent.title]: [...updatedItems]
+        };
+
+        // * KEEP. forces event render!
+        this.events = [...this.events];
+      });
     },
 
-    eventRender(info) {
+    async eventRender(info) {
       const isMain = info.event._def.extendedProps.isMain;
       if (isMain) {
         return;
@@ -223,51 +270,58 @@ export default {
 
       info.el.classList.add("is-sub");
 
-      // todo: find last in main event, instead of whole event list
-      const isLast = isLastInList(this.events, info.event.title, "title");
+      const { title } = findParentInList(
+        this.events,
+        info.event,
+        "linkedItems"
+      );
 
-      if (!isLast) {
+      if (!this.displayedItems[title]) {
         return;
       }
 
-      const displayed = isPresentInList(
-        info.event,
-        "title",
-        this.displayedItems
-      );
+      // * Prevent display objec from being linked to the list's reference
+      const list = JSON.parse(JSON.stringify(this.displayedItems[title]));
+      const displayObject = list.find(item => item.title === info.event.title);
 
-      const toRemove = isPresentInList(info.event, "title", this.itemsToRemove);
-
-      // * only adding a class as the state was modified already
-      if (!displayed) {
-        info.el.classList.toggle("appear");
+      if (!displayObject) {
+        return;
       }
 
-      // * much more data processing here as everything happens in reverse
-      if (toRemove) {
-        const { item } = getItemAndIndex(
-          this.events,
-          info.event._def.title,
-          "title"
+      if (displayObject.visual === "display-current") {
+        info.el.classList.add("appear");
+
+        const { duration, delay } = this.animationConfig;
+        const timeout = 100 + (duration + delay);
+        executeAfterDelay(timeout, () => info.el.classList.remove("appear"));
+
+        let updatedItems = markNextAs(
+          this.displayedItems[title],
+          "display-current",
+          "display-done"
         );
 
-        this.itemsToRemove = removeItemFromList(this.itemsToRemove, item);
+        this.displayedItems = {
+          [parent.title]: [...updatedItems]
+        };
+      }
 
-        const animDelay = 100; // just to prevent the animation to start when the row jump happens
-        const stateAffectDelay = this.animationConfig.duration;
+      if (displayObject.visual === "remove-current") {
+        info.el.classList.add("remove");
 
-        this.handleItemRemoval({ info, item, animDelay, stateAffectDelay });
+        const title = info.event._def.title;
+
+        const { item } = getItemAndIndex(this.events, title, "title");
+        // * offset by -100 ms to prevent the blink
+        const stateAffectDelay = this.animationConfig.duration - 100;
+
+        await this.handleItemRemoval({ item, stateAffectDelay });
       }
     },
 
-    async handleItemRemoval({ info, item, animDelay, stateAffectDelay }) {
-      await Promise.resolve();
-
-      await executeAfterDelay(animDelay, () => info.el.classList.add("remove"));
-
-      await executeAfterDelay(stateAffectDelay, () => {
+    async handleItemRemoval({ item, stateAffectDelay }) {
+      return await executeAfterDelay(stateAffectDelay, () => {
         this.events = removeItemFromList(this.events, item);
-        this.displayedItems = removeItemFromList(this.displayedItems, item);
       });
     },
 
@@ -317,6 +371,7 @@ export default {
 @keyframes collapse {
   100% {
     height: 0.5rem !important;
+    background: red;
   }
 
   0% {
