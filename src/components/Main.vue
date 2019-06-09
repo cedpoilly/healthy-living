@@ -84,26 +84,31 @@ export default {
   },
 
   mounted() {
-    const url = `${process.env.VUE_APP_BASE_URL}/data/events.json`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(events => (this.events = events))
-      .then(() => {
-        this.calendarApi = this.$refs.fullCalendar.getApi();
-
-        const currentMonthDate = this.events[0].start;
-
-        this.setCalendarDateFromEvents(this.calendarApi, currentMonthDate);
-
-        this.setCurrentLabels(currentMonthDate);
-
-        const sortString = "start"; // kept as ref: "-isMain, start"
-        this.calendarApi.setOption("eventOrder", sortString);
-      });
+    this.fetchEvents().then(this.configCalendar);
   },
 
   methods: {
+    async fetchEvents() {
+      const url = `${process.env.VUE_APP_BASE_URL}/data/events.json`;
+
+      return await fetch(url).then(response => response.json());
+    },
+
+    configCalendar(events) {
+      this.events = events;
+
+      this.calendarApi = this.$refs.fullCalendar.getApi();
+
+      const currentMonthDate = this.events[0].start;
+
+      this.setCalendarDateFromEvents(this.calendarApi, currentMonthDate);
+
+      this.setCurrentLabels(currentMonthDate);
+
+      const sortString = "start"; // kept as ref: "-isMain, start"
+      this.calendarApi.setOption("eventOrder", sortString);
+    },
+
     async fetchAnimationConfig() {
       const url = `${process.env.VUE_APP_BASE_URL}/config/animation.json`;
       const getJson = response => response.json();
@@ -128,9 +133,8 @@ export default {
     setCurrentLabels(currentMonthDate) {
       const dateObject = new Date(currentMonthDate);
 
-      this.currentMonthLabel = dateObject.toLocaleString("en-us", {
-        month: "long"
-      });
+      const options = ["en-us", { month: "long" }];
+      this.currentMonthLabel = dateObject.toLocaleString(...options);
 
       this.currentYearLabel = dateObject.getFullYear();
     },
