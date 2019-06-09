@@ -138,27 +138,24 @@ export default {
     // eslint-disable-next-line
     onEventSelected({ el, event, jsEvent, view }) {
       const description = event._def.extendedProps.description;
-
       if (description) {
         this.handleItemWithDescription(event);
       }
 
       const linkedItems = event._def.extendedProps.linkedItems;
-
       if (!linkedItems) {
         return;
       }
 
       const expanded = event._def.extendedProps.isExpanded;
       if (expanded) {
-        const config = { event, list: this.events, expanded: false };
         this.hideLinkedItems(linkedItems);
-        this.toggleExpandedOnMain(config);
       } else {
-        const config = { event, list: [...this.events], expanded: true };
         this.handleLinkedItems(linkedItems);
-        this.toggleExpandedOnMain(config);
       }
+
+      const config = { event, list: this.events, expanded: !expanded };
+      this.toggleExpandedOnMain(config);
     },
 
     handleItemWithDescription(item) {
@@ -185,17 +182,15 @@ export default {
       linkedItems.forEach(this.handleLinkedItem);
     },
 
-    handleLinkedItem(item, itemIndex) {
-      const delay =
-        100 +
-        (this.animationConfig.duration + this.animationConfig.delay) *
-          itemIndex;
+    async handleLinkedItem(item, itemIndex) {
+      const { duration, delay } = this.animationConfig;
+      const timeout = 100 + (duration + delay) * itemIndex;
 
-      executeAfterDelay(delay, () => {
-        this.displayLinkedItemIfNotYetDone(item);
-      }).then(() => {
-        this.displayedItems = [...this.displayedItems, item];
-      });
+      await executeAfterDelay(timeout, () =>
+        this.displayLinkedItemIfNotYetDone(item)
+      );
+
+      this.displayedItems = [...this.displayedItems, item];
     },
 
     displayLinkedItemIfNotYetDone(item) {
@@ -224,6 +219,7 @@ export default {
 
       info.el.classList.add("is-sub");
 
+      // todo: find last in main event, instead of whole event list
       const isLast = isLastInList(this.events, info.event.title, "title");
 
       if (!isLast) {
