@@ -2,8 +2,8 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-18T11:00:00",
-    "end": "2019-09-18T12:00:00",
+    "start": "2019-09-09T11:00:00",
+    "end": "2019-09-09T12:00:00",
     "title": "All Staff meeting (6 people)",
     "linkedItems": [
       {
@@ -12,8 +12,8 @@
         "title": "Order Ingredients for Lentil Sweet Potato Stew"
       },
       {
-        "start": "2019-09-18T10:00:00",
-        "end": "2019-09-18T10:15:00",
+        "start": "2019-09-09T10:00:00",
+        "end": "2019-09-17T10:15:00",
         "title": "Prepare Stew"
       }
     ]
@@ -21,25 +21,25 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-09T07:05:00",
-    "end": "2019-09-09T07:11:00",
+    "start": "2019-09-08T07:05:00",
+    "end": "2019-09-08T07:11:00",
     "title": "Morning Shower",
     "linkedItems": [
       {
-        "start": "2019-09-09T07:00:00",
-        "end": "2019-09-09T07:00:00",
+        "start": "2019-09-08T07:00:00",
+        "end": "2019-09-08T07:00:00",
         "title": "Start veggies in electric steamer",
         "description": "broccoli, green beans, cauliflower"
       },
       {
-        "start": "2019-09-09T07:15:00",
-        "end": "2019-09-09T07:20:00",
+        "start": "2019-09-08T07:15:00",
+        "end": "2019-09-08T07:20:00",
         "title": "Eat half the veggies",
         "description": "linked item with data"
       },
       {
-        "start": "2019-09-09T07:45:00",
-        "end": "2019-09-09T07:59:00",
+        "start": "2019-09-08T07:45:00",
+        "end": "2019-09-08T07:59:00",
         "title": "Pack lunch (rice, veggies, fruit), and go",
         "description": "linked item with data"
       }
@@ -53,13 +53,13 @@
     "title": "National Voter Registration Day",
     "linkedItems": [
       {
-        "start": "2019-09-19T20:00:00",
-        "end": "2019-09-19T20:10:00",
+        "start": "2019-09-23T20:00:00",
+        "end": "2019-09-23T20:10:00",
         "title": "Make sure you've got flax and cinnamon"
       },
       {
-        "start": "2019-09-21T08:00:00",
-        "end": "2019-09-21T012:00:00",
+        "start": "2019-09-20T08:00:00",
+        "end": "2019-09-27",
         "title": "Register voters at the farmers market"
       }
     ]
@@ -74,13 +74,13 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-08T23:00:00",
-    "end": "2019-09-08T23:00:00",
+    "start": "2019-09-07T23:00:00",
+    "end": "2019-09-07T23:00:00",
     "title": "Bed Time",
     "linkedItems": [
       {
-        "start": "2019-09-08T22:45:00",
-        "end": "2019-09-08T22:55:00",
+        "start": "2019-09-07T22:45:00",
+        "end": "2019-09-07T22:55:00",
         "title": "Start Overnight Rice"
       }
     ]
@@ -88,18 +88,18 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-13T10:00:00",
-    "end": "2019-09-16",
+    "start": "2019-09-14T10:00:00",
+    "end": "2019-09-12",
     "title": "Conference",
     "linkedItems": [
       {
-        "start": "2019-09-12T10:10:00",
-        "end": "2019-09-12",
+        "start": "2019-09-11T10:10:00",
+        "end": "2019-09-13",
         "title": "Pack Healthy Campaign Travel Kit"
       },
       {
-        "start": "2019-09-12",
-        "end": "2019-09-12",
+        "start": "2019-09-11",
+        "end": "2019-09-11",
         "title": "Order Ingredients for Conference Delivery"
       }
     ]
@@ -119,7 +119,7 @@
       {
         "start": "2019-09-22",
         "end": "2019-09-22",
-        "title": "Plan Rosh Hashanah Meal"
+        "title": "Plan Rosh Hashanah Meals"
       }
     ]
   },
