@@ -2,18 +2,18 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-09T11:00:00",
-    "end": "2019-09-09T12:00:00",
+    "start": "2020-10-01T11:00:00",
+    "end": "2020-10-01T12:00:00",
     "title": "All Staff meeting (6 people)",
     "linkedItems": [
       {
-        "start": "2019-09-16T11:00:00",
-        "end": "2019-09-16",
+        "start": "2020-09-30T11:00:00",
+        "end": "2020-09-30",
         "title": "Order Ingredients for Lentil Sweet Potato Stew"
       },
       {
-        "start": "2019-09-09T10:00:00",
-        "end": "2019-09-17T10:15:00",
+        "start": "2020-10-01T10:00:00",
+        "end": "2020-10-01T10:15:00",
         "title": "Prepare Stew"
       }
     ]
@@ -21,25 +21,25 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-08T07:05:00",
-    "end": "2019-09-08T07:11:00",
+    "start": "2020-08-31T07:05:00",
+    "end": "2020-08-31T07:11:00",
     "title": "Morning Shower",
     "linkedItems": [
       {
-        "start": "2019-09-08T07:00:00",
-        "end": "2019-09-08T07:00:00",
+        "start": "2020-08-31T07:00:00",
+        "end": "2020-08-31T07:00:00",
         "title": "Start veggies in electric steamer",
         "description": "broccoli, green beans, cauliflower"
       },
       {
-        "start": "2019-09-08T07:15:00",
-        "end": "2019-09-08T07:20:00",
+        "start": "2020-08-31T07:15:00",
+        "end": "2020-08-31T07:20:00",
         "title": "Eat half the veggies",
         "description": "linked item with data"
       },
       {
-        "start": "2019-09-08T07:45:00",
-        "end": "2019-09-08T07:59:00",
+        "start": "2020-08-31T07:45:00",
+        "end": "2020-08-31T07:59:00",
         "title": "Pack lunch (rice, veggies, fruit), and go",
         "description": "linked item with data"
       }
@@ -48,18 +48,18 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-23",
-    "end": "2019-09-23",
+    "start": "2020-09-22",
+    "end": "2020-09-22",
     "title": "National Voter Registration Day",
     "linkedItems": [
       {
-        "start": "2019-09-23T20:00:00",
-        "end": "2019-09-23T20:10:00",
+        "start": "2020-09-22T20:00:00",
+        "end": "2020-09-22T20:10:00",
         "title": "Make sure you've got flax and cinnamon"
       },
       {
-        "start": "2019-09-20T08:00:00",
-        "end": "2019-09-27",
+        "start": "2020-09-26T08:00:00",
+        "end": "2020-09-27",
         "title": "Register voters at the farmers market"
       }
     ]
@@ -67,20 +67,13 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-21",
-    "end": "2019-09-21",
-    "title": "Honor World Rhino Day"
-  },
-  {
-    "isMain": true,
-    "isExpanded": false,
-    "start": "2019-09-07T23:00:00",
-    "end": "2019-09-07T23:00:00",
+    "start": "2020-08-30T23:00:00",
+    "end": "2020-08-30T23:00:00",
     "title": "Bed Time",
     "linkedItems": [
       {
-        "start": "2019-09-07T22:45:00",
-        "end": "2019-09-07T22:55:00",
+        "start": "2020-08-307T22:45:00",
+        "end": "2020-08-30T22:55:00",
         "title": "Start Overnight Rice"
       }
     ]
@@ -88,18 +81,18 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-14T10:00:00",
-    "end": "2019-09-12",
+    "start": "2020-09-11T10:00:00",
+    "end": "2020-09-13",
     "title": "Conference",
     "linkedItems": [
       {
-        "start": "2019-09-11T10:10:00",
-        "end": "2019-09-13",
+        "start": "2020-09-10T10:10:00",
+        "end": "2020-09-10",
         "title": "Pack Healthy Campaign Travel Kit"
       },
       {
-        "start": "2019-09-11",
-        "end": "2019-09-11",
+        "start": "2020-09-10",
+        "end": "2020-09-10",
         "title": "Order Ingredients for Conference Delivery"
       }
     ]
@@ -107,32 +100,33 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-22",
-    "end": "2019-09-22",
-    "title": "Autumnal Equinox",
+    "start": "2020-09-23",
+    "end": "2020-09-23",
+    "title": "Grito de Lares Commemoration",
     "linkedItems": [
-      {
-        "start": "2019-09-22",
-        "end": "2019-09-22",
-        "title": "Google: Seasonal Vegetable Chart."
+            {
+        "start": "2020-09-21",
+        "end": "2020-09-21",
+        "title": "Order frozen ripe plantains for delivery. Freeze upon arrival"
       },
       {
-        "start": "2019-09-22",
-        "end": "2019-09-22",
-        "title": "Plan Rosh Hashanah Meals"
+        "start": "2020-09-23T10:15:00",
+        "end": "2020-09-23T10:15:00",
+        "title": "Airfry plantains. Share with colleagues"
       }
+
     ]
   },
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-03T23:00:00",
-    "end": "2019-09-03T23:10:00",
+    "start": "2020-09-03T23:00:00",
+    "end": "2020-09-03T23:10:00",
     "title": "Find yourself sharing cat videos",
     "linkedItems": [
       {
-        "start": "2019-09-03T23:10:00",
-        "end": "2019-09-03T23:15:00",
+        "start": "2020-09-03T23:10:00",
+        "end": "2020-09-03T23:15:00",
         "title": "Refresh your Travel Kit."
       }
     ]
@@ -140,13 +134,13 @@
   {
     "isMain": true,
     "isExpanded": false,
-    "start": "2019-09-28T17:00:00",
-    "end": "2019-09-28",
+    "start": "2020-09-18T17:00:00",
+    "end": "2020-09-18",
     "title": "Rosh Hashanah Dinner",
     "linkedItems": [
       {
-        "start": "2019-09-28T15:30:00",
-        "end": "2019-09-28T16:40:00",
+        "start": "2020-09-18T15:30:00",
+        "end": "2020-09-18T16:40:00",
         "title": "Cook with all the devices"
       }
     ]
