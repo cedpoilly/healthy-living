@@ -1,4 +1,18 @@
 [
+    {
+    "isMain": true,
+    "isExpanded": false,
+    "start": "2020-09-03T23:00:00",
+    "end": "2020-09-03T23:10:00",
+    "title": "Find yourself sharing cat videos",
+    "linkedItems": [
+      {
+        "start": "2020-09-03T23:10:00",
+        "end": "2020-09-03T23:15:00",
+        "title": "Refresh your Travel Kit."
+      }
+    ]
+  },
   {
     "isMain": true,
     "isExpanded": false,
@@ -115,20 +129,6 @@
         "title": "Airfry plantains. Share with colleagues"
       }
 
-    ]
-  },
-  {
-    "isMain": true,
-    "isExpanded": false,
-    "start": "2020-09-03T23:00:00",
-    "end": "2020-09-03T23:10:00",
-    "title": "Find yourself sharing cat videos",
-    "linkedItems": [
-      {
-        "start": "2020-09-03T23:10:00",
-        "end": "2020-09-03T23:15:00",
-        "title": "Refresh your Travel Kit."
-      }
     ]
   },
   {
